@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>✏️ Drawing Course — My Study Schedule</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --pink:    #FF7EB3;
+  --pink-lt: #FFE8F2;
+  --pink-dk: #C4527F;
+  --peach:   #FF9E6C;
+  --peach-lt:#FFF0E6;
+  --yellow:  #FFD166;
+  --yellow-lt:#FFF9E6;
+  --mint:    #6EDCB0;
+  --mint-lt: #E2F9F1;
+  --mint-dk: #2E9E72;
+  --sky:     #74C3FF;
+  --sky-lt:  #E5F4FF;
+  --sky-dk:  #2A7CBF;
+  --lavender:#B79EFF;
+  --lav-lt:  #F0ECFF;
+  --lav-dk:  #6A4FBF;
+  --coral:   #FF7070;
+  --coral-lt:#FFE8E8;
+
+  --bg:      #FFF8F0;
+  --card:    #FFFFFF;
+  --text:    #3A2E2E;
+  --muted:   #9A8A8A;
+  --light:   #C8B8B8;
+  --border:  2px solid #F0DEDE;
+  --shadow:  4px 4px 0px #F0DEDE;
+
+  --font-body: 'Nunito', sans-serif;
+  --font-fun:  'Caveat', cursive;
+  --radius: 16px;
+  --radius-lg: 20px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(255,126,179,0.12) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(116,195,255,0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(110,220,176,0.07) 0%, transparent 60%);
+}
+
+/* ── DOODLE SVG decorations ── */
+.doodle { position: fixed; pointer-events: none; opacity: 0.18; z-index: 0; }
+.doodle-tl { top: 20px; left: 20px; width: 120px; }
+.doodle-br { bottom: 30px; right: 20px; width: 100px; }
+
+.page-wrap { max-width: 880px; margin: 0 auto; padding: 2rem 1.25rem 5rem; position: relative; z-index: 1; }
+
+/* ── HEADER ── */
+.header { text-align: center; margin-bottom: 2.5rem; }
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 0.5rem; animation: wiggle 2.5s ease-in-out infinite; }
+@keyframes wiggle {
+  0%,100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(4deg); }
+}
+.header h1 {
+  font-family: var(--font-fun);
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--pink-dk);
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.header p {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.header-tags { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.header-tag {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 2px solid;
+}
+.tag-pink   { background: var(--pink-lt);   color: var(--pink-dk);  border-color: var(--pink); }
+.tag-sky    { background: var(--sky-lt);    color: var(--sky-dk);   border-color: var(--sky); }
+.tag-mint   { background: var(--mint-lt);   color: var(--mint-dk);  border-color: var(--mint); }
+.tag-yellow { background: var(--yellow-lt); color: #9A7000;         border-color: var(--yellow); }
+
+/* ── OVERALL PROGRESS CARD ── */
+.overall-card {
+  background: var(--card);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.overall-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, var(--pink), var(--peach), var(--yellow), var(--mint), var(--sky), var(--lavender));
+}
+.prog-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.prog-top strong { font-family: var(--font-fun); font-size: 20px; font-weight: 700; color: var(--text); }
+.prog-top span { font-size: 14px; font-weight: 700; color: var(--pink-dk); }
+.prog-track {
+  background: var(--pink-lt);
+  border-radius: 99px;
+  height: 14px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  border: 2px solid var(--pink);
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--peach), var(--yellow));
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.stat-box {
+  border-radius: var(--radius);
+  padding: 0.9rem;
+  text-align: center;
+  border: 2px solid;
+}
+.stat-box:nth-child(1) { background: var(--pink-lt);   border-color: var(--pink); }
+.stat-box:nth-child(2) { background: var(--mint-lt);   border-color: var(--mint); }
+.stat-box:nth-child(3) { background: var(--sky-lt);    border-color: var(--sky); }
+.stat-box .val { font-family: var(--font-fun); font-size: 28px; font-weight: 700; display: block; }
+.stat-box:nth-child(1) .val { color: var(--pink-dk); }
+.stat-box:nth-child(2) .val { color: var(--mint-dk); }
+.stat-box:nth-child(3) .val { color: var(--sky-dk); }
+.stat-box .lbl { font-size: 11px; font-weight: 700; color: var(--muted); margin-top: 2px; display: block; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── TABS ── */
+.tabs-wrap { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.week-tab {
+  border: 2px solid var(--light);
+  border-radius: 12px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  background: var(--card);
+  color: var(--muted);
+  transition: all 0.15s;
+  font-family: var(--font-body);
+  box-shadow: 2px 2px 0 var(--light);
+}
+.week-tab:hover { transform: translateY(-1px); color: var(--text); border-color: var(--pink); box-shadow: 2px 3px 0 var(--pink); }
+.week-tab.active { background: var(--pink); border-color: var(--pink-dk); color: #fff; box-shadow: 2px 2px 0 var(--pink-dk); transform: translateY(1px); }
+.week-tab.complete { border-color: var(--mint); color: var(--mint-dk); background: var(--mint-lt); box-shadow: 2px 2px 0 var(--mint); }
+
+/* ── WEEK PANEL ── */
+.week-panel { display: none; }
+.week-panel.active { display: block; animation: fadeUp 0.25s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.week-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 8px; }
+.week-title { font-family: var(--font-fun); font-size: 26px; font-weight: 700; color: var(--text); }
+.week-pct-pill { font-size: 12px; font-weight: 800; background: var(--yellow-lt); border-radius: 99px; padding: 5px 14px; color: #8A6500; border: 2px solid var(--yellow); }
+.week-bar-track { height: 8px; background: var(--yellow-lt); border-radius: 99px; margin-bottom: 1.25rem; overflow: hidden; border: 2px solid var(--yellow); }
+.week-bar-fill { height: 100%; background: linear-gradient(90deg, var(--yellow), var(--peach)); border-radius: 99px; transition: width 0.4s ease; }
+
+/* ── DAY CARDS ── */
+.day-card {
+  background: var(--card);
+  border: 2px solid #F0DEDE;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.1rem;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #F0DEDE;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.day-card:hover { transform: translateY(-2px); box-shadow: 4px 6px 0 #F0DEDE; }
+
+.day-card-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 2px solid #F8EDED;
+  flex-wrap: wrap;
+}
+/* Per-day colour strips */
+.day-card.d-mon .day-card-head { background: linear-gradient(135deg, var(--sky-lt) 0%, #fff 100%); border-left: 6px solid var(--sky); }
+.day-card.d-tue .day-card-head { background: linear-gradient(135deg, var(--pink-lt) 0%, #fff 100%); border-left: 6px solid var(--pink); }
+.day-card.d-thu .day-card-head { background: linear-gradient(135deg, var(--peach-lt) 0%, #fff 100%); border-left: 6px solid var(--peach); }
+.day-card.d-sun .day-card-head { background: linear-gradient(135deg, var(--lav-lt) 0%, #fff 100%); border-left: 6px solid var(--lavender); }
+
+.day-badge {
+  font-size: 11px; font-weight: 900;
+  padding: 4px 13px; border-radius: 99px;
+  white-space: nowrap; letter-spacing: 0.05em;
+  text-transform: uppercase; border: 2px solid;
+}
+.badge-mon { background: var(--sky-lt);   color: var(--sky-dk);  border-color: var(--sky); }
+.badge-tue { background: var(--pink-lt);  color: var(--pink-dk); border-color: var(--pink); }
+.badge-thu { background: var(--peach-lt); color: #B05800;        border-color: var(--peach); }
+.badge-sun { background: var(--lav-lt);   color: var(--lav-dk);  border-color: var(--lavender); }
+
+.day-head-title { font-size: 13.5px; font-weight: 700; flex: 1; color: var(--text); }
+.day-duration { font-size: 11px; font-weight: 800; color: var(--muted); white-space: nowrap; background: #F8F5FF; border: 1.5px solid #DDD0FF; border-radius: 99px; padding: 3px 10px; }
+
+.day-body { padding: 1.1rem 1.25rem; }
+
+/* ── TASK ROWS ── */
+.task-section-label {
+  font-size: 10px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.task-section-label::after { content: ''; flex: 1; height: 1.5px; background: #F0E8E8; border-radius: 2px; }
+
+.task-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.task-row:last-child { margin-bottom: 0; }
+
+.chk {
+  width: 20px; height: 20px; min-width: 20px;
+  border: 2.5px solid var(--light);
+  border-radius: 6px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px; transition: all 0.18s cubic-bezier(.34,1.56,.64,1);
+  background: var(--card);
+}
+.chk:hover { border-color: var(--pink); transform: scale(1.1); }
+.chk.checked { background: var(--mint); border-color: var(--mint-dk); transform: scale(1.05); }
+.chk.checked::after {
+  content: ''; display: block;
+  width: 5px; height: 10px;
+  border: 2.5px solid #fff;
+  border-top: none; border-left: none;
+  transform: rotate(45deg) translateY(-1px);
+}
+
+.task-text { font-size: 13.5px; line-height: 1.5; color: var(--text); font-weight: 600; }
+.task-text.done { color: var(--light); text-decoration: line-through; }
+
+/* ── PRACTICE BLOCK ── */
+.practice-block {
+  margin-top: 1rem; padding: 0.9rem 1rem;
+  background: linear-gradient(135deg, var(--yellow-lt), var(--peach-lt));
+  border-radius: var(--radius);
+  border: 2px solid var(--yellow);
+  position: relative;
+}
+.practice-block::before {
+  content: '🖌️';
+  position: absolute; right: 12px; top: 8px;
+  font-size: 18px; opacity: 0.6;
+}
+
+/* ── NOTES ── */
+.notes-block { margin-top: 1rem; }
+.notes-label {
+  font-size: 10px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.notes-label::after { content: ''; flex: 1; height: 1.5px; background: #F0E8E8; border-radius: 2px; }
+
+textarea {
+  width: 100%;
+  border: 2px solid #EEE0FF;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: var(--font-fun);
+  font-weight: 400;
+  color: var(--text);
+  background: #FDFAFF;
+  resize: vertical;
+  min-height: 65px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  line-height: 1.7;
+}
+textarea::placeholder { color: var(--light); }
+textarea:focus { border-color: var(--lavender); box-shadow: 0 0 0 3px var(--lav-lt); }
+
+/* ── REFLECTION CARD ── */
+.reflection-card {
+  background: linear-gradient(135deg, var(--lav-lt) 0%, var(--pink-lt) 100%);
+  border: 2px solid var(--lavender);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  margin-top: 1rem;
+  box-shadow: 4px 4px 0 #DDD0FF;
+}
+.reflection-card h3 {
+  font-family: var(--font-fun);
+  font-size: 20px; font-weight: 700;
+  color: var(--lav-dk);
+  margin-bottom: 0.85rem;
+}
+.refl-q { font-size: 13px; font-weight: 700; color: var(--lav-dk); margin-bottom: 5px; margin-top: 0.85rem; }
+.refl-q:first-of-type { margin-top: 0; }
+
+/* ── HABIT SECTION ── */
+.divider {
+  font-family: var(--font-fun);
+  font-size: 18px; font-weight: 700;
+  color: var(--peach);
+  margin: 2.25rem 0 1rem;
+  display: flex; align-items: center; gap: 12px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--peach), transparent);
+  border-radius: 2px;
+}
+
+.habit-section {
+  background: var(--card);
+  border: 2px solid #F0DEDE;
+  border-radius: var(--radius-lg);
+  padding: 1.4rem 1.5rem;
+  box-shadow: 4px 4px 0 #F0DEDE;
+  position: relative; overflow: hidden;
+}
+.habit-section::after {
+  content: '🎨';
+  position: absolute; right: 18px; bottom: 14px;
+  font-size: 28px; opacity: 0.18;
+}
+.habit-section h3 { font-family: var(--font-fun); font-size: 22px; font-weight: 700; margin-bottom: 1rem; color: var(--text); }
+.habit-legend { display: flex; align-items: center; gap: 16px; margin-bottom: 1rem; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.legend-dot { width: 14px; height: 14px; border-radius: 4px; }
+
+.habit-outer { display: flex; gap: 10px; align-items: flex-start; }
+.habit-day-labels { display: flex; flex-direction: column; gap: 6px; padding-top: 24px; }
+.habit-day-labels span { font-size: 10px; font-weight: 800; color: var(--muted); height: 18px; display: flex; align-items: center; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.habit-grid { display: flex; gap: 7px; flex: 1; overflow-x: auto; padding-bottom: 4px; }
+.habit-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.habit-col-label { font-size: 11px; font-weight: 800; color: var(--muted); height: 18px; display: flex; align-items: center; }
+
+/* Rainbow week labels */
+.habit-col:nth-child(1) .habit-col-label { color: #FF6B9D; }
+.habit-col:nth-child(2) .habit-col-label { color: #FF8C42; }
+.habit-col:nth-child(3) .habit-col-label { color: #FFB703; }
+.habit-col:nth-child(4) .habit-col-label { color: #2EC4B6; }
+.habit-col:nth-child(5) .habit-col-label { color: #3A86FF; }
+.habit-col:nth-child(6) .habit-col-label { color: #8338EC; }
+.habit-col:nth-child(7) .habit-col-label { color: #FF006E; }
+.habit-col:nth-child(8) .habit-col-label { color: #FB5607; }
+
+.habit-dot {
+  width: 18px; height: 18px; border-radius: 5px;
+  border: 2px solid var(--light);
+  background: #FFF5F8;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(.34,1.56,.64,1);
+}
+.habit-dot:hover { transform: scale(1.25); border-color: var(--pink); }
+.habit-dot.done { border-color: var(--mint-dk); transform: scale(1.08); }
+
+/* Rainbow done dots */
+.habit-col:nth-child(1) .habit-dot.done { background: #FF6B9D; }
+.habit-col:nth-child(2) .habit-dot.done { background: #FF8C42; }
+.habit-col:nth-child(3) .habit-dot.done { background: #FFB703; }
+.habit-col:nth-child(4) .habit-dot.done { background: #2EC4B6; }
+.habit-col:nth-child(5) .habit-dot.done { background: #3A86FF; }
+.habit-col:nth-child(6) .habit-dot.done { background: #8338EC; }
+.habit-col:nth-child(7) .habit-dot.done { background: #FF006E; }
+.habit-col:nth-child(8) .habit-dot.done { background: #FB5607; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--pink-lt); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<!-- Doodle decorations -->
+<svg class="doodle doodle-tl" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="30" cy="30" r="18" stroke="#FF7EB3" stroke-width="3" stroke-dasharray="6 4"/>
+  <circle cx="80" cy="70" r="12" stroke="#74C3FF" stroke-width="3"/>
+  <path d="M10 80 Q40 60 70 90" stroke="#FFD166" stroke-width="3" stroke-linecap="round"/>
+  <rect x="75" y="10" width="20" height="20" rx="4" stroke="#6EDCB0" stroke-width="3" transform="rotate(15 85 20)"/>
+  <path d="M55 40 L60 50 L50 50 Z" stroke="#B79EFF" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>
+<svg class="doodle doodle-br" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 50 Q30 10 50 50 Q70 90 90 50" stroke="#FF7EB3" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="20" cy="80" r="10" stroke="#FFD166" stroke-width="3"/>
+  <rect x="60" y="60" width="25" height="25" rx="5" stroke="#74C3FF" stroke-width="3" transform="rotate(-10 72 72)"/>
+</svg>
+
+<div class="page-wrap">
+
+  <div class="header">
+    <span class="header-emoji">🎨</span>
+    <h1>My Drawing Course</h1>
+    <p>Study schedule — stay consistent, keep creating ✨</p>
+    <div class="header-tags">
+      <span class="header-tag tag-pink">8 Weeks</span>
+      <span class="header-tag tag-sky">4 Days / Week</span>
+      <span class="header-tag tag-mint">1 hr Sessions</span>
+      <span class="header-tag tag-yellow">+30 min Practice</span>
+    </div>
+  </div>
+
+  <!-- Overall progress -->
+  <div class="overall-card">
+    <div class="prog-top">
+      <strong>✨ Overall progress</strong>
+      <span id="overall-pct">0%</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="overall-bar" style="width:0%"></div></div>
+    <div class="stats-row">
+      <div class="stat-box"><span class="val" id="stat-done">0</span><span class="lbl">Tasks done</span></div>
+      <div class="stat-box"><span class="val" id="stat-total">0</span><span class="lbl">Total tasks</span></div>
+      <div class="stat-box"><span class="val" id="stat-weeks">0/8</span><span class="lbl">Weeks complete</span></div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-wrap" id="tabs"></div>
+
+  <!-- Panels -->
+  <div id="panels"></div>
+
+  <!-- Habit tracker -->
+  <div class="divider">🌈 Habit tracker</div>
+  <div class="habit-section">
+    <h3>📅 My drawing streak</h3>
+    <div class="habit-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#FFF5F8;border:2px solid #E0C8C8;"></div>Not yet</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--mint);"></div>Done!</div>
+    </div>
+    <div class="habit-outer">
+      <div class="habit-day-labels">
+        <span>Mon</span><span>Tue</span><span>Thu</span><span>Sun</span>
+      </div>
+      <div class="habit-grid" id="habit-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WEEKS=[
+  {title:"Week 1 — Foundations 🌱",days:[
+    {day:"Monday",badge:"mon",cls:"d-mon",dur:"1 hour",lessons:["Trailer – Part 1 Introduction","How to Begin"],practice:null},
+    {day:"Tuesday",badge:"tue",cls:"d-tue",dur:"1 hr + 30 min",lessons:["Circles & Ovals","Straight Edged Shapes"],practice:"Draw pages of circles, ellipses, triangles, and squares."},
+    {day:"Thursday",badge:"thu",cls:"d-thu",dur:"1 hr + 30 min",lessons:["Beyond Basic Shapes"],practice:"Break objects into shapes — cup, chair, phone."},
+    {day:"Sunday",badge:"sun",cls:"d-sun",dur:"1 hour",lessons:["How to Simplify Any Subject"],practice:null}
+  ]},
+  {title:"Week 2 — Measuring & Value 📐",days:[
+    {day:"Monday",badge:"mon",cls:"d-mon",dur:"1 hour",lessons:["Basics of Measuring & Proportion"],practice:null},
+    {day:"Tuesday",badge:"tue",cls:"d-tue",dur:"1 hr + 30 min",lessons:["Angles, Enveloping & Block-In"],practice:"Draw objects using the block-in method."},
+    {day:"Thursday",badge:"thu",cls:"d-thu",dur:"1 hr + 30 min",lessons:["Contours, Detail & Value"],practice:"Draw simple objects focusing only on contour lines."},
+    {day:"Sunday",badge:"sun",cls:"d-sun",dur:"1 hour",lessons:["Cardinal Demo Part 1"],practice:null}
+  ]},
+  {title:"Week 3 — Demos 🐦",days:[
+    {day:"Monday",badge:"mon",cls:"d-mon",dur:"1 hour",lessons:["Cardinal Demo Part 2"],practice:null},
+    {day:"Tuesday",badge:"tue",cls:"d-tue",dur:"1 hr + 30 min",lessons:["Botanical Demo Part 1"],practice:"Draw plants or leaves."},
+    {day:"Thursday",badge:"thu",cls:"d-thu",dur:"1 hr + 30 min",lessons:["Botanical Demo Part 2"],practice:"Draw flowers or plants from reference."},
+    {day:"Sunday",badge:"sun",cls:"d-sun",dur:"1 hour",lessons:["Materials & Setup","Conclusion"],practice:null}
+  ]},
+  {title:"Week 4 — Drawing in 3D 🔮",days:[
+    {day:"Monday",badge:"mon",cls:"d-mon",dur:"1 hour",lessons:["Trailer","The Sphere"],practice:null},
+    {day:"Tuesday",badge:"tue",cls:"d-tue",dur:"1 hr + 30 min",lessons:["The Cylinder"],practice:"Draw spheres and cylinders."},
+    {day:"Thursday",badge:"thu",cls:"d-thu",dur:"1 hr + 30 min",lessons:["The Cube"],practice:"Draw cubes in different rotations."},
+    {day:"Sunday",badge:"sun",cls:"d-sun",dur:"1 hour",lessons:["A Simple Still Life"],practice:null}
+  ]},
+  {title:"Week 5 — 3D Forms 🪨",days:[
+    {day:"Monday",badge:"mon",cls:"d-mon",dur:"1 hour",lessons:["Boxes and Beyond"],practice:null},
+    {day:"Tuesday",badge:"tue",cls:"d-tue",dur:"1 hr + 30 min",lessons:["Natural Forms"],practice:"Draw rocks, fruits, plants as 3D shapes."},
+    {day:"Thursday",badge:"thu",cls:"d-thu",dur:"1 hr + 30 min",lessons:["Human Made Forms"],practice:"Draw objects like mugs, lamps, chairs."},
+    {day:"Sunday",badge:"sun",cls:"d-sun",dur:"1 hour",lessons:["Complex 3D Forms"],practice:null}
+  ]},
+  {title:"Week 6 — Language of Line ✍️",days:[
+    {day:"Monday",badge:"mon",cls:"d-mon",dur:"1 hour",lessons:["Trailer","Introduction","Defining & Exploring Lines"],practice:null},
+    {day:"Tuesday",badge:"tue",cls:"d-tue",dur:"1 hr + 30 min",lessons:["Inner & Outer Contours"],practice:"Contour drawings of objects."},
+    {day:"Thursday",badge:"thu",cls:"d-thu",dur:"1 hr + 30 min",lessons:["Cross Contours"],practice:"Draw cross-contour lines on shapes."},
+    {day:"Sunday",badge:"sun",cls:"d-sun",dur:"1 hour",lessons:["Tactile & Textural Lines"],practice:null}
+  ]},
+  {title:"Week 7 — Line & Shading 🌗",days:[
+    {day:"Monday",badge:"mon",cls:"d-mon",dur:"1 hour",lessons:["Atmosphere & Focus","Emotional Lines"],practice:null},
+    {day:"Tuesday",badge:"tue",cls:"d-tue",dur:"1 hr + 30 min",lessons:["Time & Motion","The Power of Line"],practice:"Dynamic line drawings."},
+    {day:"Thursday",badge:"thu",cls:"d-thu",dur:"1 hr + 30 min",lessons:["Shading Trailer","Introduction","Light, Shadow and Value"],practice:"Shade spheres and cubes."},
+    {day:"Sunday",badge:"sun",cls:"d-sun",dur:"1 hour",lessons:["Dividing Light from Shadow"],practice:null}
+  ]},
+  {title:"Week 8 — Shading Mastery 🏆",days:[
+    {day:"Monday",badge:"mon",cls:"d-mon",dur:"1 hour",lessons:["Cast Shadows"],practice:null},
+    {day:"Tuesday",badge:"tue",cls:"d-tue",dur:"1 hr + 30 min",lessons:["Core Shadows"],practice:"Shade objects with cast shadows."},
+    {day:"Thursday",badge:"thu",cls:"d-thu",dur:"1 hr + 30 min",lessons:["Drawing Light Beyond the Basics"],practice:"Draw a simple still life with shading."},
+    {day:"Sunday",badge:"sun",cls:"d-sun",dur:"1 hour",lessons:["Shading Natural Forms","Shading Complex Forms"],practice:null}
+  ]}
+];
+
+const REFL_QS=["What clicked for you this week? ✨","Which exercise challenged you most? 💪","What do you want to focus on next week? 🎯"];
+
+let checks=JSON.parse(localStorage.getItem('dc_checks')||'{}');
+let notes=JSON.parse(localStorage.getItem('dc_notes')||'{}');
+let reflections=JSON.parse(localStorage.getItem('dc_refl')||'{}');
+let habit=JSON.parse(localStorage.getItem('dc_habit')||'{}');
+
+function save(){
+  localStorage.setItem('dc_checks',JSON.stringify(checks));
+  localStorage.setItem('dc_notes',JSON.stringify(notes));
+  localStorage.setItem('dc_refl',JSON.stringify(reflections));
+  localStorage.setItem('dc_habit',JSON.stringify(habit));
+}
+
+function tid(wi,di,k){return `w${wi}d${di}_${k}`;}
+
+function weekStats(wi){
+  let total=0,done=0;
+  WEEKS[wi].days.forEach((day,di)=>{
+    day.lessons.forEach((_,li)=>{total++;if(checks[tid(wi,di,'l'+li)])done++;});
+    if(day.practice){total++;if(checks[tid(wi,di,'p')])done++;}
+    total++;if(checks[tid(wi,di,'sd')])done++;
+  });
+  return{total,done};
+}
+
+function updateStats(){
+  let total=0,done=0,wc=0;
+  WEEKS.forEach((_,wi)=>{
+    const s=weekStats(wi);total+=s.total;done+=s.done;
+    if(s.total>0&&s.done===s.total)wc++;
+  });
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('overall-pct').textContent=pct+'%';
+  document.getElementById('overall-bar').style.width=pct+'%';
+  document.getElementById('stat-done').textContent=done;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-weeks').textContent=wc+'/8';
+  WEEKS.forEach((_,wi)=>{
+    const s=weekStats(wi);
+    const p=s.total?Math.round(s.done/s.total*100):0;
+    const fill=document.getElementById('wfill-'+wi);
+    const pill=document.getElementById('wpill-'+wi);
+    if(fill)fill.style.width=p+'%';
+    if(pill)pill.textContent=p+'% complete';
+    const tab=document.querySelector(`.week-tab[data-wi="${wi}"]`);
+    if(tab){if(p===100)tab.classList.add('complete');else tab.classList.remove('complete');}
+  });
+}
+
+function buildPanel(wi){
+  const week=WEEKS[wi];
+  const div=document.createElement('div');
+  div.className='week-panel';div.id='panel-'+wi;
+  div.innerHTML=`
+    <div class="week-head">
+      <span class="week-title">${week.title}</span>
+      <span class="week-pct-pill" id="wpill-${wi}">0% complete</span>
+    </div>
+    <div class="week-bar-track"><div class="week-bar-fill" id="wfill-${wi}" style="width:0%"></div></div>`;
+
+  week.days.forEach((day,di)=>{
+    const card=document.createElement('div');
+    card.className=`day-card ${day.cls}`;
+
+    let lessonsHtml=`<div class="task-section-label">📺 Watch</div>`;
+    day.lessons.forEach((lesson,li)=>{
+      const id=tid(wi,di,'l'+li);
+      const dn=checks[id]?'done':'';const ch=checks[id]?'checked':'';
+      lessonsHtml+=`<div class="task-row"><div class="chk ${ch}" data-id="${id}"></div><div class="task-text ${dn}" id="txt-${id}">${lesson}</div></div>`;
+    });
+
+    let practiceHtml='';
+    if(day.practice){
+      const pid=tid(wi,di,'p');const dn=checks[pid]?'done':'';const ch=checks[pid]?'checked':'';
+      practiceHtml=`<div class="practice-block"><div class="task-section-label">✏️ Practice — 30 min</div><div class="task-row"><div class="chk ${ch}" data-id="${pid}"></div><div class="task-text ${dn}" id="txt-${pid}">${day.practice}</div></div></div>`;
+    }
+
+    const sdId=tid(wi,di,'sd');const noteKey=`note_${wi}_${di}`;
+    const sdDn=checks[sdId]?'done':'';const sdCh=checks[sdId]?'checked':'';
+    card.innerHTML=`
+      <div class="day-card-head">
+        <div class="day-badge badge-${day.badge}">${day.day}</div>
+        <div class="day-head-title">${day.lessons.join(' · ')}</div>
+        <div class="day-duration">${day.dur}</div>
+      </div>
+      <div class="day-body">
+        ${lessonsHtml}
+        ${practiceHtml}
+        <div class="notes-block">
+          <div class="notes-label">📝 Notes & reflections</div>
+          <div class="task-row" style="margin-bottom:8px;">
+            <div class="chk ${sdCh}" data-id="${sdId}"></div>
+            <span class="task-text ${sdDn}" id="txt-${sdId}">Mark session complete ⭐</span>
+          </div>
+          <textarea placeholder="Write your thoughts, discoveries, what surprised you..." data-notekey="${noteKey}">${notes[noteKey]||''}</textarea>
+        </div>
+      </div>`;
+    div.appendChild(card);
+  });
+
+  const refl=document.createElement('div');
+  refl.className='reflection-card';
+  let rHtml=`<h3>🪞 Weekly reflection</h3>`;
+  REFL_QS.forEach((q,qi)=>{
+    const rkey=`refl_${wi}_${qi}`;
+    rHtml+=`<div class="refl-q">${q}</div><textarea placeholder="Write your thoughts..." data-reflkey="${rkey}">${reflections[rkey]||''}</textarea>`;
+  });
+  refl.innerHTML=rHtml;
+  div.appendChild(refl);
+  return div;
+}
+
+const tabsEl=document.getElementById('tabs');
+const panelsEl=document.getElementById('panels');
+WEEKS.forEach((w,wi)=>{
+  const tab=document.createElement('button');
+  tab.className='week-tab'+(wi===0?' active':'');
+  tab.dataset.wi=wi;tab.textContent='Week '+(wi+1);
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.week-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.week-panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');document.getElementById('panel-'+wi).classList.add('active');
+  });
+  tabsEl.appendChild(tab);
+  const panel=buildPanel(wi);
+  if(wi===0)panel.classList.add('active');
+  panelsEl.appendChild(panel);
+});
+
+const habitGrid=document.getElementById('habit-grid');
+const dayLabels=['Mon','Tue','Thu','Sun'];
+WEEKS.forEach((_,wi)=>{
+  const col=document.createElement('div');col.className='habit-col';
+  col.innerHTML=`<div class="habit-col-label">W${wi+1}</div>`;
+  dayLabels.forEach((dl,di)=>{
+    const hid=`h_${wi}_${di}`;
+    const dot=document.createElement('div');
+    dot.className='habit-dot'+(habit[hid]?' done':'');
+    dot.title=`Week ${wi+1} · ${dl}`;
+    dot.addEventListener('click',()=>{habit[hid]=!habit[hid];dot.classList.toggle('done',habit[hid]);save();});
+    col.appendChild(dot);
+  });
+  habitGrid.appendChild(col);
+});
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('.chk');if(!el)return;
+  const id=el.dataset.id;checks[id]=!checks[id];
+  el.classList.toggle('checked',checks[id]);
+  const txt=document.getElementById('txt-'+id);
+  if(txt)txt.classList.toggle('done',checks[id]);
+  save();updateStats();
+});
+document.addEventListener('input',e=>{
+  if(e.target.dataset.notekey){notes[e.target.dataset.notekey]=e.target.value;save();}
+  if(e.target.dataset.reflkey){reflections[e.target.dataset.reflkey]=e.target.value;save();}
+});
+
+updateStats();
+</script>
+</body>
+</html>
